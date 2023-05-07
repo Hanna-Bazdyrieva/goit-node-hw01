@@ -9,34 +9,50 @@ async function updateContacts(contacts) {
 }
 
 async function listContacts() {
-	const data = await fs.readFile(contactsPath);
-	const list = JSON.parse(data);
-	return list;
+	try {
+		const data = await fs.readFile(contactsPath);
+		const list = JSON.parse(data);
+		return list;
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 async function getContactById(contactId) {
-	const contacts = await listContacts();
-	const result = contacts.find((item) => item.id === contactId) || null;
-	return result;
+	try {
+		const contacts = await listContacts();
+		const result = contacts.find((item) => item.id === contactId) || null;
+		return result;
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 async function removeContact(contactId) {
-	const contacts = await listContacts();
-	const index = contacts.findIndex((item) => item.id === contactId);
-	if (index === -1) {
-		return null;
+	try {
+		const contacts = await listContacts();
+		const index = contacts.findIndex((item) => item.id === contactId);
+		if (index === -1) {
+			return null;
+		}
+		const removedContact = contacts.splice(index, 1);
+		updateContacts(contacts);
+		return removedContact;
+	} catch (error) {
+		console.log(error);
 	}
-	const removedContact = contacts.splice(index, 1);
-	updateContacts(contacts);
-	return removedContact;
 }
 
 async function addContact(data) {
-	const contacts = await listContacts();
-	const newContact = { ...data, id: v4() };
-	contacts.push(newContact);
-	updateContacts(contacts);
-	return newContact;
+	try {
+		const contacts = await listContacts();
+		const newContact = { ...data, id: v4() };
+		contacts.push(newContact);
+		updateContacts(contacts);
+		return newContact;
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 module.exports = {
